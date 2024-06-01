@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatBot</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa; /* Light gray background */
+            padding-top: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff; /* White background for chat container */
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1); /* Light shadow for container */
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            height: 80vh; /* Adjust the height as needed */
+            overflow-y: auto; /* Enable scrolling for chat messages */
+        }
+        .chat-box {
+            clear: both;
+            overflow: auto;
+            padding: 10px;
+            margin-bottom: 10px;
+            display: inline-block;
+            max-width: 80%;
+            border-radius: 10px;
+        }
+        .user-message {
+            background-color: #007bff; /* Blue for user messages */
+            color: white;
+            padding: 10px;
+            border-top-left-radius: 0px;
+            border-bottom-right-radius: 10px;
+            border-bottom-left-radius: 10px;
+            margin-left: 20%;
+            margin-bottom: 10px;
+            float: right;
+            clear: both;
+        }
+        .bot-message {
+            background-color: #6c757d; /* Dark gray for bot messages */
+            color: white;
+            padding: 10px;
+            border-top-right-radius: 0px;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            margin-right: 20%;
+            margin-bottom: 10px;
+            float: left;
+            clear: both;
+        }
+        .input-box {
+            width: calc(100% - 85px); 
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #929496; 
+        }
+        .btn-send {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Chat with Bot</h1>
+        <div id="chat-box"></div>
+        <div class="input-group mb-3">
+            <input type="text" id="user-input" class="form-control input-box" placeholder="Type a message...">
+            <div class="input-group-append">
+                <button class="btn btn-send" type="button" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        function sendMessage() {
+            var userInput = document.getElementById('user-input').value;
+            var chatBox = document.getElementById('chat-box');
+            
+            // Append user message to chat box
+            var userMessage = document.createElement('div');
+            userMessage.classList.add('chat-box', 'user-message');
+            userMessage.textContent = userInput;
+            chatBox.appendChild(userMessage);
+
+            // Scroll to bottom of chat box
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // Send user input to server and get bot response
+            fetch('/get?msg=' + userInput)
+                .then(response => response.text())
+                .then(data => {
+                    // Append bot message to chat box
+                    var botMessage = document.createElement('div');
+                    botMessage.classList.add('chat-box', 'bot-message');
+                    botMessage.textContent = data;
+                    chatBox.appendChild(botMessage);
+                    document.getElementById('user-input').value = '';
+
+                    // Scroll to bottom of chat box after bot response
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                });
+        }
+    </script>
+</body>
+</html>
